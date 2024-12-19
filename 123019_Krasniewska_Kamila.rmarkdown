@@ -10,6 +10,8 @@ format:
 editor: source
 ---
 
+
+
 # Wstęp
 
 Informacje o wyniku na Kaggle:
@@ -58,6 +60,8 @@ Dzięki realizacji projektu autorka raportu nabyła praktyczne umiejętności w 
 
 Instalacja i wczytywanie pakietów:
 
+
+
 ```{r}
 options(repos = c(CRAN = "https://cran.r-project.org"))
 install.packages("rmarkdown")
@@ -84,7 +88,11 @@ library(stringr)
 pdf.options(encoding = "CP1250")
 ```
 
+
+
 Wczytanie danych:
+
+
 
 ```{r}
 data_train <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/train.csv")
@@ -92,7 +100,11 @@ data_train <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkani
 data_test <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/test.csv")
 ```
 
+
+
 Przetwarzanie danych:
+
+
 
 ```{r}
 #Połączenie danych w jeden zbiór
@@ -102,7 +114,11 @@ all_data <- bind_rows(data_train, data_test)
 all_data_edit <- all_data
 ```
 
+
+
 Sprawdzenie czy wszystkie id są unikalne i logiczności dat:
+
+
 
 ```{r}
 # Sprawdzenie czy wszystkie id są unikalne
@@ -134,7 +150,11 @@ all_data_edit <- all_data_edit %>%
   mutate(quarter = ifelse(quarter == "", NA, quarter))
 ```
 
+
+
 Wstępna wizualizacja braków:
+
+
 
 ```{r}
 gg_miss_var(all_data_edit)
@@ -142,7 +162,11 @@ gg_miss_case(all_data_edit)
 vis_miss(all_data_edit, cluster = TRUE, sort_miss = TRUE)
 ```
 
+
+
 Identyfikacja wartości odstających, nietypowych dla konkretnych zmiennych:
+
+
 
 ```{r}
 #Krótkie podsumowanie
@@ -156,7 +180,11 @@ summary(all_data_edit)
   #building_floor_number - pare możliwych wysokich wartości - do weryfikacji z tytułem ogłoszenia
 ```
 
+
+
 Zamiana wartości z wysokim prawdopodobieństwem niepoprawnych na NA:
+
+
 
 ```{r}
 #wartość flat_area mniejsza od 0 i wieksza od 500 -> NA
@@ -176,14 +204,22 @@ all_data_edit <- all_data_edit %>%
   mutate(flat_deposit = ifelse(flat_deposit > 15000, NA, flat_deposit))
 ```
 
+
+
 Imputacja dedukcyjna - imputacja danych wywnioskowanych z tytułów ogłoszeń:
+
+
 
 ```{r}
 #Powielenie ramki danych - dalsza praca na nowej ramce 
 all_data_regex <- all_data_edit
 ```
 
+
+
 -   zmienne logiczne:
+
+
 
 ```{r}
 #Komentarze nad kodem wskazują, dla jakiej kolumny wykonywane są operacje
@@ -508,7 +544,11 @@ all_data_regex <- all_data_regex %>%
   select(-flat_kitchen_sep_cl)
 ```
 
+
+
 -   zmienne numeryczne:
+
+
 
 ```{r}
 #Komentarze nad kodem wskazują, dla jakiej kolumny wykonywane są operacje
@@ -594,7 +634,11 @@ all_data_regex <- all_data_regex %>%
   select(-price_cl)  
 ```
 
+
+
 -   zmienna kategoryczna ("quarter"):
+
+
 
 ```{r}
 districts <- readLines("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/dzielnice_wszystkie_nazwy.txt")
@@ -634,25 +678,41 @@ all_data_regex <- all_data_regex %>%
   select(-quarter_cl_2)
 ```
 
+
+
 Wizualizacja braków danych przed przystąpieniem do dalszej imputacji:
+
+
 
 ```{r}
 gg_miss_var(all_data_regex)
 ```
 
+
+
 Powielenie wynikowego zbioru danych:
+
+
 
 ```{r}
 data_for_imputation <- all_data_regex
 ```
 
+
+
 Wyodrębnienie zbioru danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji:
+
+
 
 ```{r}
 all_data_for_imputation <- data_for_imputation %>% select(-ad_title)
 ```
 
+
+
 Imputacja metodą k-najbliższych sąsiadów dla zmiennej "quarter":
+
+
 
 ```{r}
 #wektor zawierający nazwy kolumn z ramki danych, posortowane według liczby brakujących wartości
@@ -669,7 +729,11 @@ all_data_for_imputation <- all_data_for_imputation %>%
   kNN(k=3, variable = c("quarter"))
 ```
 
+
+
 Imputacja z wykorzystaniem regresji logistycznej dla zmiennych binarnych: "flat_furnished", "flat_internet" i "flat_closed_area":
+
+
 
 ```{r}
 #regresja logistyczna dla niektórych zmiennych binarnych: flat_furnished, flat_internet, flat_closed_area
@@ -699,7 +763,11 @@ preds  <- rbinom(length(preds), size = 1, prob = preds)
 all_data_for_imputation_II[missing_closed_area, "flat_closed_area"] <- preds[missing_closed_area]
 ```
 
+
+
 Imputacja metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występują braki (k=4):
+
+
 
 ```{r}
 #knn dla reszty zmiennych binarnych
@@ -712,7 +780,11 @@ gg_miss_var(all_data_for_imputation_III)
 summary(all_data_for_imputation_III)
 ```
 
+
+
 Imputacja metodą MICE z wykorzystaniem PMM dla brakujących zmiennych numerycznych:
+
+
 
 ```{r}
 #przygotowanie do imputacji - wybór kolumn uwzględnionych w imputacji
@@ -748,7 +820,11 @@ train_data <- completed_data_full[completed_data_full$id %in% train_ids, ]
 test_data <- completed_data_full[completed_data_full$id %in% test_ids, ]
 ```
 
+
+
 Zastosowanie lasu losowego do predykcji wartości cen:
+
+
 
 ```{r}
 set.seed(123)
@@ -765,7 +841,11 @@ rf_model_ranger <- ranger(
 predictions <- predict(rf_model_ranger, data = test_data)$predictions
 ```
 
+
+
 Zapis wyników do pliku csv:
+
+
 
 ```{r}
 #dodanie przewidywań do danych data_test
@@ -781,7 +861,11 @@ colnames(final_data) <- c("ID", "TARGET")
 write.csv(final_data, "ouput.csv", row.names = FALSE) 
 ```
 
+
+
 Wizualizacja rozkładu cen przed predykcją i po niej:
+
+
 
 ```{r}
 missing_indices <- which(is.na(completed_data_full$price))
@@ -814,3 +898,4 @@ ggplot(completed_data_full, aes(x = price)) +
   ) +
   scale_x_continuous(limits = c(0, 5000), breaks = seq(0, 5000, by = 500))
 ```
+

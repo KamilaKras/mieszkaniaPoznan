@@ -16,7 +16,7 @@ Informacje o wyniku na Kaggle:
 
 -   nick: kamilakrasniewska
 
--   wynik: 96875.37
+-   **wynik:**
 
 W ramach projektu zastosowano cztery metody: imputację dedukcyjną, imputację metodą k-najbliższych sąsiadów, imputację przy użyciu modelu logistycznego i predykcję przy użyciu lasu losowego. Informacje o metodach spoza zakresu zajęć pozyskano z:
 
@@ -30,21 +30,19 @@ W ramach projektu wykorzystano LLM ChatGPT do przyporządkowania nazw obszarów 
 
 Projekt wykonano w języku R (wersja 4. 4. 2), korzystając z RStudio. Dane treningowe i testowe zostały połączone w jeden zbiór. W ramach pierwszego etapu dokonano eksploracji danych. Wykluczono występowanie zduplikowanych id oraz błędów w logice między datami aktywacji, modyfikacji i wygaśnięcia ogłoszeń. Znaleziono wartości puste w zbiorze danych i zastąpiono je przez "NA" dla ujednolicenia sposobu prezentacji braków. Następnie wykryto wartości odstające i nietypowe ze względu na charakter zmiennych. Po zbadaniu tych wartości te uznane za niepoprawne zmienione na braki danych.
 
-W kolejnym etapie wykonano imputacje dedukcyjną, wnioskując na podstawie tytułów ogłoszeń. W ten sposób zaimputowano nie tylko część brakujących danych, ale zweryfikowano również poprawność innych (obecnych) danych. Metodę zastosowano dla danych logicznych, numerycznych oraz zmiennej kategorycznej (dzielnica). Zauważono, że w kolumnie "quarter" pojawiają się potoczne nazwy dzielnic, nazwy oficjalne, nazwy osiedli, części dzielnic etc. W związku z tym, postanowiono spróbować możliwie je ujednolicić. Z tytułów ogłoszeń wyekstrahowano nazwy dzielnic (nieoficjalne i oficjalne) i zaimputowano uzyskane wartości. W drugim etapie ujednolicono nazewnictwo dzielnic - przypisano do bardziej ogólnych nazw dzielnic. Plik zewnętrzny o nazwie Dzielnice_Poznan.xlsx to plik opracowany przy użyciu ChatGpt.
+W kolejnym etapie wykonano imputacje dedukcyjną, wnioskując na podstawie tytułów ogłoszeń. W ten sposób zaimputowano nie tylko część brakujących danych, ale zweryfikowano również poprawność innych (obecnych) danych. Metodę zastosowano dla danych logicznych, numerycznych oraz zmiennej kategorycznej (dzielnica). Zauważono, że w kolumnie "quarter" pojawiają się potoczne nazwy dzielnic, nazwy oficjalne, nazwy osiedli, części dzielnic etc. W związku z tym, postanowiono spróbować możliwie je ujednolicić. Z tytułów ogłoszeń wyekstrahowano nazwy dzielnic (nieoficjalne i oficjalne) i zaimputowano uzyskane wartości. W drugim etapie ujednolicono nazewnictwo dzielnic - przypisano do bardziej ogólnych nazw dzielnic. Plik zewnętrzny o nazwie ... to plik wygenerowany przy użyciu ChatGpt.
 
-W kolejnym etapie wyodrębniono zbiór danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji. Zastosowano imputację metodą k-najbliższych sąsiadów (k=3) do zaimputowania brakujących danych o dzielnicach. Następnie zbadano korelacje pomiędzy zmiennymi i na podstawie wyników wykorzystano modele regresji logistycznej do imputacji brakująych danych w kolumnach "flat_furnished", "flat_internet" i "flat_closed_area". Kolejnym krokiem było ponowne zastosowanie imputacji metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występowały braki (k=4). Następnie, zmienne numeryczne "flat_area", "flat_rent" i "flat_rooms" zaimputowano wykorzystując imputację wielokrotną (MICE) z modelem PMM.
+W kolejnym etapie wyodrębniono zbiór danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji. Zastosowano imputację metodą k-najbliższych sąsiadów **(k=x)** do zaimputowania brakujących danych o dzielnicach. Następnie zbadano korelacje pomiędzy zmiennymi i na podstawie wyników wykorzystano modele regresji logistycznej do imputacji brakująych danych w kolumnach "flat_furnished", "flat_internet" i "flat_closed_area". Kolejnym krokiem było ponowne zastosowanie imputacji metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występowały braki **(k=5).**
 
-W ostatnim etapie, w celu predykcji wartości cen, zastosowano las losowy. Prace projektowe pozwoliły na uzupełnienie wszystkich braków danych i predykcji cen ("price"). Wartości "price" dla obserwacji ze zbioru testowego zapisano do pliku "output.csv", które załadowano do kaggle.com.
+W ostatnim etapie braki danych pozostały w zmiennych numerycznych: "flat_area", "flat_rent", "flat_rooms" i docelowej "price". Zdecydowano o zastosowaniu lasu losowego przy użyciu ramki danych tylko ze zmiennymi numerycznymi. Prace projektowe pozwoliły na uzupełnienie wszystkich braków danych i predykcji cen ("price"). Wartości "price" dla początkowych obserwacji ze zbioru testowego zapisano do pliku "output.R".
 
 # Wyniki
 
-W wyniku prac projektowych wszystkie brakujące dane zostały uzupełnione. Model predykcyjny uzyskał satysfakcjonujące wyniki - błąd średniokwadratowy na poziomie niższym niż 100000. Zastosowane metody można uznać za skuteczne. Rozkład przewidywanej zmiennej nie uległ znacznej zmianie.
+**wykresy rozkladow, bl**
 
-![](images/clipboard-210354067.png){fig-align="center" width="529"}
+**Proszę opisać uzyskane wyniki.**
 
-![](images/clipboard-3293251708.png){fig-align="center" width="530"}
-
-Realizując projekt sprawdzono wiele rozwiązań (dokładnie 14), różniących się głównie sposobem łączenia i kolejnością stosowania metod imputacji. Pare początkowych wyników wrzucanych na kaggle.com miało służyć sprawdzeniu jak zmienianie i uszczegóławianie podejścia przybliża wyniki do rzeczywistych. Kilka wyników to te dotyczące zaprezentowanego w raporcie podejścia. Różnią się wartościami paramterów modeli: liczba sąsiadów w metodzie KNN oraz liczba drzew w metodzie lasu losowego. Pomimo tego, że las losowy z większą liczbą drzew gwarantował wyniki najbardziej zbliżone do rzeczywistych, zdecydowano zmniejszyć liczbę drzew dla przyspieszenia obliczeń przy zachowaniu zadowalającego wyniku.
+Realizując projekt sprawdzono wiele rozwiązań (dokładnie **...**), różniących się głównie sposobem łączenia i kolejnością stosowania metod imputacji. Pare początkowych wyników wrzucanych na kaggle.com miało służyć sprawdzeniu jak zmienianie i uszczegóławianie podejścia przybliża wyniki do rzeczywistych. Ostatnie **...** wyników to wyniki dotyczące zaprezentowanego w raporcie podejścia. Różnią się wartościami paramterów modeli: liczba sąsiadów w metodzie KNN oraz liczba drzew w metodzie lasu losowego. Pomimo tego, że las losowy z większą liczbą drzew gwarantował wyniki najbardziej zbliżone do rzeczywistych, zdecydowano zmniejszyć liczbę drzew dla przyspieszenia obliczeń przy zachowaniu zadowalającego wyniku.
 
 # Podsumowanie
 
@@ -59,23 +57,22 @@ Dzięki realizacji projektu autorka raportu nabyła praktyczne umiejętności w 
 Instalacja i wczytywanie pakietów:
 
 ```{r}
-options(repos = c(CRAN = "https://cran.r-project.org"))
-install.packages("rmarkdown")
 install.packages("data.table")
+install.packages("rmarkdown")
 install.packages("dplyr")
 install.packages("readxl")
 install.packages("stringr")
 install.packages("ggplot2")
+install.packages("missForest")
 install.packages("VIM")
 install.packages("xtable")
 install.packages("naniar")
-install.packages("ranger")
-install.packages("mice")
-library(mice)
+install.packages("panelView")
 library(readxl)
 library(VIM)
-library(ranger)
 library(naniar)
+library(missForest)
+library(panelView)
 library(ggplot2)
 library(data.table)
 library(dplyr)
@@ -132,14 +129,6 @@ print(all_data_edit %>%
 #Wartości puste występują w kolumnie "quarter" - zamiana " " na NA
 all_data_edit <- all_data_edit %>%
   mutate(quarter = ifelse(quarter == "", NA, quarter))
-```
-
-Wstępna wizualizacja braków:
-
-```{r}
-gg_miss_var(all_data_edit)
-gg_miss_case(all_data_edit)
-vis_miss(all_data_edit, cluster = TRUE, sort_miss = TRUE)
 ```
 
 Identyfikacja wartości odstających, nietypowych dla konkretnych zmiennych:
@@ -592,6 +581,7 @@ all_data_regex <- all_data_regex %>%
 all_data_regex <- all_data_regex %>%
   mutate(price = coalesce(price, price_cl)) %>%
   select(-price_cl)  
+
 ```
 
 -   zmienna kategoryczna ("quarter"):
@@ -662,17 +652,18 @@ vars_by_NAs <- all_data_for_imputation %>%
   sort(decreasing = FALSE) %>%
   names()
 
-#imputacja metodą k-najbliższych sąsiadów, gdzie k=3
-set.seed(123)
+#imputacja metodą k-najbliższych sąsiadów, gdzie k=1
 all_data_for_imputation <- all_data_for_imputation %>%
   select(all_of(vars_by_NAs)) %>%
-  kNN(k=3, variable = c("quarter"))
+  kNN(k=2, variable = c("quarter"))
 ```
+
+**!!!!!!DODAĆ MACIERZ KORELACJI!!!!!!!!!**
 
 Imputacja z wykorzystaniem regresji logistycznej dla zmiennych binarnych: "flat_furnished", "flat_internet" i "flat_closed_area":
 
 ```{r}
-#regresja logistyczna dla niektórych zmiennych binarnych: flat_furnished, flat_internet, flat_closed_area
+#regresja logistyczna dla niektóych zmiennych binarnych: flat_furnished, flat_internet, flat_closed_area
 #flat_furnished
 all_data_for_imputation_II <- all_data_for_imputation
 missing_flat_furnished <- is.na(all_data_for_imputation$flat_furnished)
@@ -697,120 +688,253 @@ logreg_model <- glm(flat_closed_area ~ flat_monitoring,
 preds <- predict(logreg_model, type="response")
 preds  <- rbinom(length(preds), size = 1, prob = preds)
 all_data_for_imputation_II[missing_closed_area, "flat_closed_area"] <- preds[missing_closed_area]
+
+gg_miss_var(all_data_for_imputation_II)
 ```
 
-Imputacja metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występują braki (k=4):
+Imputacja metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występują braki (k=5):
 
 ```{r}
 #knn dla reszty zmiennych binarnych
-set.seed(123)
 all_data_for_imputation_III <- kNN(all_data_for_imputation_II, k=4, variable = c(
-  "flat_for_students", "flat_dishwasher", "flat_garden", "flat_garage", "flat_balcony", "flat_internet", "flat_closed_area", "flat_furnished", "individual"))
+  "flat_for_students", "flat_dishwasher", "flat_garden", "flat_garage", "flat_balcony",
+  "flat_internet", "flat_closed_area", "flat_furnished", "individual"
+))
 
 gg_miss_var(all_data_for_imputation_III)
 
 summary(all_data_for_imputation_III)
 ```
 
-Imputacja metodą MICE z wykorzystaniem PMM dla brakujących zmiennych numerycznych:
+MICE DLA NUMERYCZNYCH
 
 ```{r}
-#przygotowanie do imputacji - wybór kolumn uwzględnionych w imputacji
-data_for_imputation <- all_data_for_imputation_III[, c("id", "flat_rent", "flat_area", "flat_rooms", "building_floor_num", "flat_utility_room", "flat_basement", "flat_tarrace", "flat_lift", "flat_two_level", "flat_kitchen_sep", "flat_air_cond", "flat_nonsmokers", "flat_washmachine", "flat_fridge", "flat_cooker", "flat_oven", "flat_television", "flat_anti_blinds", "flat_monitoring", "flat_deposit", "individual", "flat_furnished", "flat_balcony", "flat_garage", "flat_garden", "flat_dishwasher", "flat_for_students", "flat_closed_area", "flat_internet")]
+install.packages("mice")
+library(mice)
 ```
 
 ```{r}
-#imputacja
+# Wybór kolumn, które będą uwzględnione w imputacji
+data_for_imputation <- all_data_for_imputation_III[, c("id", "flat_rent", "flat_area", "flat_rooms", 
+                                                      "building_floor_num", "flat_utility_room",
+                                                      "flat_basement", "flat_tarrace", "flat_lift",
+                                                      "flat_two_level", "flat_kitchen_sep", "flat_air_cond",
+                                                      "flat_nonsmokers", "flat_washmachine", "flat_fridge",
+                                                      "flat_cooker", "flat_oven", "flat_television",
+                                                      "flat_anti_blinds", "flat_monitoring", "flat_deposit",
+                                                      "individual", "flat_furnished", "flat_balcony", 
+                                                      "flat_garage", "flat_garden", "flat_dishwasher",
+                                                      "flat_for_students", "flat_closed_area", "flat_internet")]
+
+```
+
+```{r}
+# Ustawienie metody imputacji na 'pmm' dla zmiennych numerycznych
 mice_mod <- mice(data_for_imputation, method = 'pmm', m = 5, seed = 123)
 
-#uzyskanie jednego zestawu danych
+# Wybór jednego z kompletnych zestawów danych
 completed_data <- complete(mice_mod, 1)
 summary(completed_data)
 ```
 
 ```{r}
-#połączenie danych
+colnames(completed_data)
+colnames(all_data_for_imputation_III)
+```
+
+```{r}
+all(completed_data$id %in% all_data_for_imputation_III$id)
+any(completed_data$id %in% all_data_for_imputation_III$id)
+
+
+```
+
+```{r}
 completed_data_full <- merge(completed_data, all_data_for_imputation_III[, c("id", "quarter", "date_activ", "date_modif", "date_expire", "price")], by = "id", all.x = TRUE)
+
+
+# Sprawdzenie wynikowego zestawu danych
+summary(completed_data_full)
 ```
 
-```{r}
-#kodowanie zmiennych kategorycznych 
-completed_data_full$quarter <- as.factor(completed_data_full$quarter)
-```
+nowy xgboost
 
 ```{r}
-#wyekstrahowanie id z oryginalnych danych treningowych i testowych
+install.packages("xgboost")
+library(xgboost)
+# Wyciągnięcie ID z oryginalnych zestawów treningowych i testowych
 train_ids <- data_train$id
 test_ids <- data_test$id
 
-#podział zaimputowanych danych na treningowe i testowe
+# Podział zaimputowanych danych z powrotem na treningowe i testowe
 train_data <- completed_data_full[completed_data_full$id %in% train_ids, ]
 test_data <- completed_data_full[completed_data_full$id %in% test_ids, ]
 ```
 
-Zastosowanie lasu losowego do predykcji wartości cen:
+```{r}
+train_data <- train_data[ , !(names(train_data) %in% c("ad_title", "quarter", "date_activ", "date_modif", "date_expire"))]
+test_data <- test_data[ , !(names(test_data) %in% c("ad_title", "quarter", "date_activ", "date_modif", "date_expire"))]
+# Konwersja danych treningowych i testowych do DMatrix
+dtrain <- xgb.DMatrix(data = as.matrix(train_data[, -ncol(train_data)]), label = train_data$price)
+dtest <- xgb.DMatrix(data = as.matrix(test_data[, -ncol(test_data)]))
+
+```
 
 ```{r}
-set.seed(123)
-#budowanie modelu lasu losowego na danych treningowych
+params <- list(
+  booster = "gbtree",
+  objective = "reg:squarederror",
+  eta = 0.3,
+  max_depth = 6,
+  min_child_weight = 1,
+  subsample = 0.8,
+  colsample_bytree = 0.8
+)
+
+# Trenowanie modelu
+xgb_model <- xgb.train(params = params, data = dtrain, nrounds = 100)
+
+# Przewidywanie na zbiorze testowym
+predictions <- predict(xgb_model, dtest)
+
+# Ocena modelu
+mse <- mean((predictions - data_test$price)^2)
+print(paste("MSE:", mse))
+
+```
+
+```{r}
+# Dodanie przewidywań do data_test
+data_test$Predicted_Price <- predictions
+
+# Dodanie kolumny z numerem porządkowym
+data_test$Order_Number <- seq_len(nrow(data_test))
+
+# Zapisywanie danych do pliku CSV
+write.csv(data_test[, c("Order_Number", "Predicted_Price")], "Predicted_Prices_xgboost.csv", row.names = FALSE)
+
+```
+
+```{r}
+install.packages("randomForest")
+library(randomForest)
+```
+
+```{r}
+sum(is.na(completed_data_full))
+
+# Zakodowanie zmiennych kategorycznych
+completed_data_full$quarter <- as.factor(completed_data_full$quarter)
+```
+
+```{r}
+# Wyciągnięcie ID z oryginalnych zestawów treningowych i testowych
+train_ids <- data_train$id
+test_ids <- data_test$id
+
+# Podział zaimputowanych danych z powrotem na treningowe i testowe
+train_data <- completed_data_full[completed_data_full$id %in% train_ids, ]
+test_data <- completed_data_full[completed_data_full$id %in% test_ids, ]
+```
+
+Las losowy (nowy):
+
+```{r}
+library(ranger)
+
+# Budowanie modelu lasu losowego za pomocą ranger
 rf_model_ranger <- ranger(
   formula         = price ~ . - id, 
   data            = train_data, 
-  num.trees       = 1000,
+  num.trees       = 500,
   importance      = 'impurity', 
   min.node.size   = 5,
   respect.unordered.factors = "order"
 )
-#przewidywanie na danych testowych
+
+# Przewidywanie na zbiorze testowym
 predictions <- predict(rf_model_ranger, data = test_data)$predictions
+mse <- mean((predictions - test_data$price)^2)
+print(paste("MSE:", mse))
+
+# Sprawdzenie ważności zmiennych
+importance <- rf_model_ranger$variable.importance
+print(importance)
 ```
 
-Zapis wyników do pliku csv:
+```{r}
+print(predictions)
+```
 
 ```{r}
-#dodanie przewidywań do danych data_test
+# Dodanie przewidywań do data_test
 data_test$Predicted_Price <- predictions
-#dodanie kolumny z numerem porządkowym
+
+# Dodanie kolumny z numerem porządkowym
 data_test$Order_Number <- seq_len(nrow(data_test))
 
-#ramka danych z wynikami
-final_data <- data_test[, c("Order_Number", "Predicted_Price")]
-colnames(final_data) <- c("ID", "TARGET")
+# Zapisywanie danych do pliku CSV
+write.csv(data_test[, c("Order_Number", "Predicted_Price")], "Predicted_Prices.csv", row.names = FALSE)
 
-#zapisywanie wyników do pliku CSV
-write.csv(final_data, "ouput.csv", row.names = FALSE) 
 ```
 
-Wizualizacja rozkładu cen przed predykcją i po niej:
+Przygotowanie ramki danych do imputacji przy użyciu lasu losowego:
 
 ```{r}
-missing_indices <- which(is.na(completed_data_full$price))
-#wstawienie przewidywanych wartości do brakujących miejsc
-completed_data_full$price[missing_indices] <- predictions
-original_data <- completed_data_full
-original_data$price[missing_indices] <- NA
+#usunięcie zbędnych kolumn - wynikowych poprzednich imputacji
+all_data_for_imputation_III <- all_data_for_imputation_III %>% select(
+  -flat_furnished_imp, -flat_closed_area_imp, -flat_internet_imp, -flat_balcony_imp, -individual_imp, -flat_garage_imp, -flat_garden_imp, -flat_dishwasher_imp, -flat_for_students_imp,
+  -quarter_imp)
 
-# Rozkład przed predykcją
-ggplot(data_train, aes(x = price)) +
-  geom_histogram(binwidth = 50, fill = "blue", alpha = 0.7) + # Zmniejsz binwidth dla większej szczegółowości
-  labs(title = "Rozkład cen przed uzupełnieniem braków", x = "Cena", y = "Liczba") +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
-  ) +
-  scale_x_continuous(limits = c(0, 5000), breaks = seq(0, 5000, by = 500))
+#powielenie ramki danych do wykonania kolejnych operacji
+all_data_for_imputation_IV <- all_data_for_imputation_III
 
-# Rozkład po predykcji
-ggplot(completed_data_full, aes(x = price)) +
-  geom_histogram(binwidth = 50, fill = "red", alpha = 0.7) + 
-  labs(title = "Rozkład cen po uzupełnieniu braków", x = "Cena", y = "Liczba") +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
-    axis.text = element_text(size = 12),
-    axis.title = element_text(size = 14)
-  ) +
-  scale_x_continuous(limits = c(0, 5000), breaks = seq(0, 5000, by = 500))
+#las losowy wymaga zmiennych numerycznych
+#wektor nazw kolumn, które będą wykorzystane w dalszej imputacji
+cols_to_change <- c("flat_deposit", "flat_utility_room", "flat_basement",
+                    "flat_tarrace", "flat_lift", "flat_two_level", "flat_kitchen_sep",
+                    "flat_air_cond", "flat_nonsmokers", "flat_washmachine", "flat_fridge",
+                    "flat_cooker", "flat_oven", "flat_television", "flat_anti_blinds",
+                    "flat_monitoring", "individual", "flat_garden", "flat_dishwasher",
+                    "flat_for_students", "flat_closed_area", "flat_internet", "flat_balcony", "flat_garage")  
+#zamiana wartości logicznych na binarne
+all_data_for_imputation_IV[cols_to_change] <- lapply(all_data_for_imputation_IV[cols_to_change], as.numeric)
+
+#ramka danych do imputacji lasem losowym
+data_for_rf <- all_data_for_imputation_IV %>% select(-date_activ, -date_modif, -date_expire, -quarter)
+```
+
+Predykcja przy użyciu lasu losowego:
+
+```{r}
+#ustawienie ziarna dla odtworzenia wyniku
+set.seed(123)
+#budowa i zastosowanie lasu losowego
+imp_res <- missForest(data_for_rf, ntree=30)
+data_for_rf_imp <- imp_res$ximp
+imp_res$OOBerror
+```
+
+Weryfikacja, że nie ma już braków danych:
+
+```{r}
+#suma braków danych w kolumnach ramki roboczej
+data_for_rf_imp %>% is.na() %>% colSums()
+```
+
+Zapis wyników do pliku:
+
+```{r}
+#wyodrębnienie wynikowej części ramki danychwie id
+result <- data_for_rf_imp[data_for_rf_imp$id %in% data_test$id, c("id", "price")]
+#dortowanie danych zgodnie z kolejnością z data_test
+result <- result[order(match(result$id, data_test$id)), ]
+#dodanie kolumny z numeracją porządkową
+result$order <- 1:nrow(result)
+#wybór kolumn: order i price
+final_result <- result[, c("order", "price")]
+#zmiana nazw kolumn na ID i TARGET
+colnames(final_result) <- c("ID", "TARGET")
+#zapis wyniku do pliku csv
+write.csv(final_result, "wynik.csv", row.names = FALSE)
 ```
