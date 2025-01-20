@@ -3137,7 +3137,7 @@ vertical-align: -.125em;
 <section id="metodyka" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Metodyka</h1>
 <p>Projekt wykonano w języku R (wersja 4. 4. 2), korzystając z RStudio. Dane treningowe i testowe zostały połączone w jeden zbiór. W ramach pierwszego etapu dokonano eksploracji danych. Wykluczono występowanie zduplikowanych id oraz błędów w logice między datami aktywacji, modyfikacji i wygaśnięcia ogłoszeń. Znaleziono wartości puste w zbiorze danych i zastąpiono je przez “NA” dla ujednolicenia sposobu prezentacji braków. Następnie wykryto wartości odstające i nietypowe ze względu na charakter zmiennych. Po zbadaniu tych wartości te uznane za niepoprawne zmienione na braki danych.</p>
-<p>W kolejnym etapie wykonano imputacje dedukcyjną, wnioskując na podstawie tytułów ogłoszeń. W ten sposób zaimputowano nie tylko część brakujących danych, ale zweryfikowano również poprawność innych (obecnych) danych. Metodę zastosowano dla danych logicznych, numerycznych oraz zmiennej kategorycznej (dzielnica). Zauważono, że w kolumnie “quarter” pojawiają się potoczne nazwy dzielnic, nazwy oficjalne, nazwy osiedli, części dzielnic etc. W związku z tym, postanowiono spróbować możliwie je ujednolicić. Z tytułów ogłoszeń wyekstrahowano nazwy dzielnic (nieoficjalne i oficjalne) i zaimputowano uzyskane wartości. W drugim etapie ujednolicono nazewnictwo dzielnic - przypisano do bardziej ogólnych nazw dzielnic. Plik zewnętrzny o nazwie Dzielnice_Poznan.xlsx to plik opracowany przy użyciu ChatGpt.</p>
+<p>W kolejnym etapie wykonano imputacje dedukcyjną, wnioskując na podstawie tytułów ogłoszeń. W ten sposób zaimputowano nie tylko część brakujących danych, ale zweryfikowano również poprawność innych (obecnych) danych. Metodę zastosowano dla danych logicznych, numerycznych oraz zmiennej kategorycznej (dzielnica). Zauważono, że w kolumnie “quarter” pojawiają się potoczne nazwy dzielnic, nazwy oficjalne, nazwy osiedli, części dzielnic etc. W związku z tym, postanowiono spróbować możliwie je ujednolicić. Z tytułów ogłoszeń wyekstrahowano nazwy dzielnic (nieoficjalne i oficjalne) i zaimputowano uzyskane wartości. W drugim etapie ujednolicono nazewnictwo dzielnic - przypisano do bardziej ogólnych nazw dzielnic. Plik zewnętrzny o nazwie Dzielnice_Poznan.xlsx to plik opracowany przy użyciu ChatGpt, którego zawartość została przypisana do ramki danych district_mapping.</p>
 <p>W kolejnym etapie wyodrębniono zbiór danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji. Zastosowano imputację metodą k-najbliższych sąsiadów (k=3) do zaimputowania brakujących danych o dzielnicach. Następnie zbadano korelacje pomiędzy zmiennymi i na podstawie wyników wykorzystano modele regresji logistycznej do imputacji brakujących danych w kolumnach “flat_furnished”, “flat_internet” i “flat_closed_area”. Kolejnym krokiem było ponowne zastosowanie imputacji metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występowały braki (k=4). Następnie, zmienne numeryczne “flat_area”, “flat_rent” i “flat_rooms” zaimputowano wykorzystując imputację wielokrotną (MICE) z modelem PMM.</p>
 <p>W ostatnim etapie, w celu predykcji wartości cen, zastosowano las losowy. Prace projektowe pozwoliły na uzupełnienie wszystkich braków danych i predykcji cen (“price”). Wartości “price” dla obserwacji ze zbioru testowego zapisano do pliku “output.csv”, które załadowano do kaggle.com.</p>
 </section>
@@ -3783,42 +3783,39 @@ vertical-align: -.125em;
 <ul>
 <li>zmienna kategoryczna (“quarter”):</li>
 </ul>
+<p>Uwaga: w tym miejscu znajduje się komórka ukryta w wersji html raportu dla zwiększenia jego czytelności. Komórka zawiera dane służące do przypisania dzielnic - część wygenerowana przez LLM jak wskazano w części opisowej raportu.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>districts <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">&quot;C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/dzielnice_wszystkie_nazwy.txt&quot;</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#I etap</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Zdefiniowanie funkcji do wyszukiwania nazwy dzielnicy w ad_title</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>extract_district <span class="ot">&lt;-</span> <span class="cf">function</span>(title, districts) {</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (district <span class="cf">in</span> districts) {</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">str_detect</span>(title, <span class="fu">fixed</span>(district, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>))) {</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(district)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="cn">NA</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#Wywołanie funkcji i doodanie nowej kolumny &#39;quarter_cl&#39; z wynikami</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(quarter), <span class="fu">sapply</span>(ad_title, extract_district, districts), quarter))</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#Porównanie informacji w oryginalnej kolumnie i kolumnie roboczej, zastąpenie nieznanych wartości oraz usunięcie kolumny roboczej</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter =</span> <span class="fu">coalesce</span>(quarter, quarter_cl)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>quarter_cl)</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#II etap</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#Wczytanie pliku excel zawierającego przyporządkowanie potocznej nazwy do bardziej ogólnego obszaru Poznania</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>district_mapping <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">&quot;C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/Dzielnice_Poznan.xlsx&quot;</span>)</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="co">#Przekształcenie na listę</span></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>district_list <span class="ot">&lt;-</span> <span class="fu">setNames</span>(district_mapping<span class="sc">$</span>obszar, district_mapping<span class="sc">$</span>dzielnica_potocznie)</span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="co">#Dodanie kolumny roboczej quarter_cl_2 z przyporządkowanymi nazwami obszarów</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl_2 =</span> <span class="fu">recode</span>(quarter, <span class="sc">!!!</span>district_list))</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">#Porównanie kolumn, wstawienie poprawionych i usunięcie kolumny roboczej</span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl_2 =</span> <span class="fu">coalesce</span>(quarter, quarter_cl_2)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>quarter_cl_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#I etap</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#Zdefiniowanie funkcji do wyszukiwania nazwy dzielnicy w ad_title</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>extract_district <span class="ot">&lt;-</span> <span class="cf">function</span>(title, districts) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (district <span class="cf">in</span> districts) {</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">str_detect</span>(title, <span class="fu">fixed</span>(district, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>))) {</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(district)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#Wywołanie funkcji i doodanie nowej kolumny &#39;quarter_cl&#39; z wynikami</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(quarter), <span class="fu">sapply</span>(ad_title, extract_district, districts), quarter))</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#Porównanie informacji w oryginalnej kolumnie i kolumnie roboczej, zastąpenie nieznanych wartości oraz usunięcie kolumny roboczej</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter =</span> <span class="fu">coalesce</span>(quarter, quarter_cl)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>quarter_cl)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#II etap</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#Przekształcenie na listę</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>district_list <span class="ot">&lt;-</span> <span class="fu">setNames</span>(district_mapping<span class="sc">$</span>obszar, district_mapping<span class="sc">$</span>dzielnica_potocznie)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co">#Dodanie kolumny roboczej quarter_cl_2 z przyporządkowanymi nazwami obszarów</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl_2 =</span> <span class="fu">recode</span>(quarter, <span class="sc">!!!</span>district_list))</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co">#Porównanie kolumn, wstawienie poprawionych i usunięcie kolumny roboczej</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>all_data_regex <span class="ot">&lt;-</span> all_data_regex <span class="sc">%&gt;%</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">quarter_cl_2 =</span> <span class="fu">coalesce</span>(quarter, quarter_cl_2)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>quarter_cl_2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Wizualizacja braków danych przed przystąpieniem do dalszej imputacji:</p>
 <div class="cell">
