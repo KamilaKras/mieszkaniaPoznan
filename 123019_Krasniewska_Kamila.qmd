@@ -1,5 +1,5 @@
 ---
-title: "Raport z projektu zaliczeniowego: Analiza Danych Niekompletnych (2024)"
+title: "82535_Kraśniewska_Kamila"
 author: "Kamila Kraśniewska (123019)"
 format: 
   html:
@@ -32,7 +32,7 @@ Projekt wykonano w języku R (wersja 4. 4. 2), korzystając z RStudio. Dane tren
 
 W kolejnym etapie wykonano imputacje dedukcyjną, wnioskując na podstawie tytułów ogłoszeń. W ten sposób zaimputowano nie tylko część brakujących danych, ale zweryfikowano również poprawność innych (obecnych) danych. Metodę zastosowano dla danych logicznych, numerycznych oraz zmiennej kategorycznej (dzielnica). Zauważono, że w kolumnie "quarter" pojawiają się potoczne nazwy dzielnic, nazwy oficjalne, nazwy osiedli, części dzielnic etc. W związku z tym, postanowiono spróbować możliwie je ujednolicić. Z tytułów ogłoszeń wyekstrahowano nazwy dzielnic (nieoficjalne i oficjalne) i zaimputowano uzyskane wartości. W drugim etapie ujednolicono nazewnictwo dzielnic - przypisano do bardziej ogólnych nazw dzielnic. Plik zewnętrzny o nazwie Dzielnice_Poznan.xlsx to plik opracowany przy użyciu ChatGpt.
 
-W kolejnym etapie wyodrębniono zbiór danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji. Zastosowano imputację metodą k-najbliższych sąsiadów (k=3) do zaimputowania brakujących danych o dzielnicach. Następnie zbadano korelacje pomiędzy zmiennymi i na podstawie wyników wykorzystano modele regresji logistycznej do imputacji brakująych danych w kolumnach "flat_furnished", "flat_internet" i "flat_closed_area". Kolejnym krokiem było ponowne zastosowanie imputacji metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występowały braki (k=4). Następnie, zmienne numeryczne "flat_area", "flat_rent" i "flat_rooms" zaimputowano wykorzystując imputację wielokrotną (MICE) z modelem PMM.
+W kolejnym etapie wyodrębniono zbiór danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji. Zastosowano imputację metodą k-najbliższych sąsiadów (k=3) do zaimputowania brakujących danych o dzielnicach. Następnie zbadano korelacje pomiędzy zmiennymi i na podstawie wyników wykorzystano modele regresji logistycznej do imputacji brakujących danych w kolumnach "flat_furnished", "flat_internet" i "flat_closed_area". Kolejnym krokiem było ponowne zastosowanie imputacji metodą k-najbliższych sąsiadów dla zmiennych binarnych, w których nadal występowały braki (k=4). Następnie, zmienne numeryczne "flat_area", "flat_rent" i "flat_rooms" zaimputowano wykorzystując imputację wielokrotną (MICE) z modelem PMM.
 
 W ostatnim etapie, w celu predykcji wartości cen, zastosowano las losowy. Prace projektowe pozwoliły na uzupełnienie wszystkich braków danych i predykcji cen ("price"). Wartości "price" dla obserwacji ze zbioru testowego zapisano do pliku "output.csv", które załadowano do kaggle.com.
 
@@ -44,13 +44,13 @@ W wyniku prac projektowych wszystkie brakujące dane zostały uzupełnione. Mode
 
 ![](images/clipboard-3293251708.png){fig-align="center" width="530"}
 
-Realizując projekt sprawdzono wiele rozwiązań (dokładnie 14), różniących się głównie sposobem łączenia i kolejnością stosowania metod imputacji. Pare początkowych wyników wrzucanych na kaggle.com miało służyć sprawdzeniu jak zmienianie i uszczegóławianie podejścia przybliża wyniki do rzeczywistych. Kilka wyników to te dotyczące zaprezentowanego w raporcie podejścia. Różnią się wartościami paramterów modeli: liczba sąsiadów w metodzie KNN oraz liczba drzew w metodzie lasu losowego. Pomimo tego, że las losowy z większą liczbą drzew gwarantował wyniki najbardziej zbliżone do rzeczywistych, zdecydowano zmniejszyć liczbę drzew dla przyspieszenia obliczeń przy zachowaniu zadowalającego wyniku.
+Realizując projekt sprawdzono wiele rozwiązań (dokładnie 20), różniących się głównie hiperparametrami, sposobem łączenia i kolejnością stosowania metod imputacji. Pare początkowych wyników wrzucanych na kaggle.com miało służyć sprawdzeniu jak zmienianie i uszczegóławianie podejścia przybliża wyniki do rzeczywistych. Kilka wyników to te dotyczące zaprezentowanego w raporcie podejścia. Różnią się wartościami paramterów modeli: liczba sąsiadów w metodzie KNN oraz liczba drzew w metodzie lasu losowego. Pomimo tego, że las losowy z większą liczbą drzew gwarantował wyniki najbardziej zbliżone do rzeczywistych, zdecydowano zmniejszyć liczbę drzew dla przyspieszenia obliczeń przy zachowaniu zadowalającego wyniku.
 
 # Podsumowanie
 
 W ramach projektu dotyczącego danych o mieszkaniach przeznaczanych na wynajem w Poznaniu dokonano kompleksowej imputacji. Po eksploracji danych i skorygowaniu wartości odstająych, zastosowano imputację dedukcyjną opierającą się na analizie tytułów ogłoszeń, co pozwoliło nie tylko uzupełnić brakujące informacje, ale także poprawić jakość danych już obecnych w zbiorze. W dalszych krokach dokonano imputacji metodą k-najbliższych sąsiadów oraz regresji logistycznej, co umożliwiło dalsze uzupełnianie braków. Finalnie, użyto lasu losowego do przewidywania brakujących wartości numerycznych, co pozwoliło uzyskać finalny wynik. Ostatecznie średnia z sumy kwadratów różnic między wartościami prawdziwymi cen, a przewidywanymi okazała się być na zadowalającym poziomie.
 
-Jak wskazano wyżej LLM ChatGpt został wykorzystany do przeszukania sieci i przyporządkowania obszarów Poznania do odpowiednich dzielnic. Pomimo tego, że polecenie nie zostało wykonane w pełni, to z pewnością zredukowało czas poświęcony na przeszukiwanie źródeł interneowych przez autorkę. W związaku z tym doświadczenie można uznać za pozytywne.
+Jak wskazano wyżej LLM ChatGpt został wykorzystany do przeszukania sieci i przyporządkowania obszarów Poznania do odpowiednich dzielnic. Pomimo tego, że polecenie nie zostało wykonane w pełni, to z pewnością zredukowało czas poświęcony na przeszukiwanie źródeł interneowych przez autorkę. W związku z tym doświadczenie można uznać za pozytywne.
 
 Dzięki realizacji projektu autorka raportu nabyła praktyczne umiejętności w wykrywaniu braków i błędów danych oraz dopasowywaniu odpowiednich metod imputacji. Istotna była możliwość przetestowania różnych podejść do braków danych i zobaczenia ich rezultatów. Umożliwiło to praktyczne porównanie działania tych metod. W trakcie realizacji projektu autorka znacząco poprawiła umiejętności posługiwania się językiem R.
 
@@ -58,7 +58,7 @@ Dzięki realizacji projektu autorka raportu nabyła praktyczne umiejętności w 
 
 Instalacja i wczytywanie pakietów:
 
-```{r}
+```{r, message=FALSE, warning=FALSE, error=TRUE, echo=TRUE, results='hide'}
 options(repos = c(CRAN = "https://cran.r-project.org"))
 install.packages("rmarkdown")
 install.packages("data.table")
@@ -86,7 +86,7 @@ pdf.options(encoding = "CP1250")
 
 Wczytanie danych:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 data_train <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/train.csv")
 
 data_test <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/test.csv")
@@ -94,7 +94,7 @@ data_test <- read.csv("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkania
 
 Przetwarzanie danych:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #Połączenie danych w jeden zbiór
 all_data <- bind_rows(data_train, data_test)
 
@@ -104,7 +104,7 @@ all_data_edit <- all_data
 
 Sprawdzenie czy wszystkie id są unikalne i logiczności dat:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 # Sprawdzenie czy wszystkie id są unikalne
 is_unique <- length(all_data$id) == length(unique(all_data$id))
 if (is_unique) {
@@ -158,7 +158,7 @@ summary(all_data_edit)
 
 Zamiana wartości z wysokim prawdopodobieństwem niepoprawnych na NA:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #wartość flat_area mniejsza od 0 i wieksza od 500 -> NA
 all_data_edit <- all_data_edit %>%
   mutate(flat_area = ifelse(flat_area <= 0 | flat_area > 500, NA, flat_area))
@@ -178,14 +178,14 @@ all_data_edit <- all_data_edit %>%
 
 Imputacja dedukcyjna - imputacja danych wywnioskowanych z tytułów ogłoszeń:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #Powielenie ramki danych - dalsza praca na nowej ramce 
 all_data_regex <- all_data_edit
 ```
 
 -   zmienne logiczne:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #Komentarze nad kodem wskazują, dla jakiej kolumny wykonywane są operacje
 #Operacje wykonywane dla kolumn są bardzo podobne, więc dla zachowania przejrzystości zachowano komentarze tylko dla pierwszego przypadku
 
@@ -510,7 +510,7 @@ all_data_regex <- all_data_regex %>%
 
 -   zmienne numeryczne:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #Komentarze nad kodem wskazują, dla jakiej kolumny wykonywane są operacje
 
 #flat_rent
@@ -596,7 +596,7 @@ all_data_regex <- all_data_regex %>%
 
 -   zmienna kategoryczna ("quarter"):
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 districts <- readLines("C:/Users/kamil/ProjektADN/daneNiekompletneR_V5/mieszkaniaPoznan/dzielnice_wszystkie_nazwy.txt")
 #I etap
 #Zdefiniowanie funkcji do wyszukiwania nazwy dzielnicy w ad_title
@@ -642,19 +642,19 @@ gg_miss_var(all_data_regex)
 
 Powielenie wynikowego zbioru danych:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 data_for_imputation <- all_data_regex
 ```
 
 Wyodrębnienie zbioru danych bez tytułów ogłoszeń dla usprawnienia dalszych metod imputacji:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 all_data_for_imputation <- data_for_imputation %>% select(-ad_title)
 ```
 
 Imputacja metodą k-najbliższych sąsiadów dla zmiennej "quarter":
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #wektor zawierający nazwy kolumn z ramki danych, posortowane według liczby brakujących wartości
 vars_by_NAs <- all_data_for_imputation %>%
   is.na() %>%
@@ -671,7 +671,7 @@ all_data_for_imputation <- all_data_for_imputation %>%
 
 Imputacja z wykorzystaniem regresji logistycznej dla zmiennych binarnych: "flat_furnished", "flat_internet" i "flat_closed_area":
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #regresja logistyczna dla niektórych zmiennych binarnych: flat_furnished, flat_internet, flat_closed_area
 #flat_furnished
 all_data_for_imputation_II <- all_data_for_imputation
@@ -714,12 +714,12 @@ summary(all_data_for_imputation_III)
 
 Imputacja metodą MICE z wykorzystaniem PMM dla brakujących zmiennych numerycznych:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #przygotowanie do imputacji - wybór kolumn uwzględnionych w imputacji
 data_for_imputation <- all_data_for_imputation_III[, c("id", "flat_rent", "flat_area", "flat_rooms", "building_floor_num", "flat_utility_room", "flat_basement", "flat_tarrace", "flat_lift", "flat_two_level", "flat_kitchen_sep", "flat_air_cond", "flat_nonsmokers", "flat_washmachine", "flat_fridge", "flat_cooker", "flat_oven", "flat_television", "flat_anti_blinds", "flat_monitoring", "flat_deposit", "individual", "flat_furnished", "flat_balcony", "flat_garage", "flat_garden", "flat_dishwasher", "flat_for_students", "flat_closed_area", "flat_internet")]
 ```
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #imputacja
 mice_mod <- mice(data_for_imputation, method = 'pmm', m = 5, seed = 123)
 
@@ -728,17 +728,17 @@ completed_data <- complete(mice_mod, 1)
 summary(completed_data)
 ```
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #połączenie danych
 completed_data_full <- merge(completed_data, all_data_for_imputation_III[, c("id", "quarter", "date_activ", "date_modif", "date_expire", "price")], by = "id", all.x = TRUE)
 ```
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #kodowanie zmiennych kategorycznych 
 completed_data_full$quarter <- as.factor(completed_data_full$quarter)
 ```
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #wyekstrahowanie id z oryginalnych danych treningowych i testowych
 train_ids <- data_train$id
 test_ids <- data_test$id
@@ -750,7 +750,7 @@ test_data <- completed_data_full[completed_data_full$id %in% test_ids, ]
 
 Zastosowanie lasu losowego do predykcji wartości cen:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 set.seed(123)
 #budowanie modelu lasu losowego na danych treningowych
 rf_model_ranger <- ranger(
@@ -767,7 +767,7 @@ predictions <- predict(rf_model_ranger, data = test_data)$predictions
 
 Zapis wyników do pliku csv:
 
-```{r}
+```{r, echo=TRUE, results='hide'}
 #dodanie przewidywań do danych data_test
 data_test$Predicted_Price <- predictions
 #dodanie kolumny z numerem porządkowym
@@ -778,12 +778,12 @@ final_data <- data_test[, c("Order_Number", "Predicted_Price")]
 colnames(final_data) <- c("ID", "TARGET")
 
 #zapisywanie wyników do pliku CSV
-write.csv(final_data, "ouput.csv", row.names = FALSE) 
+write.csv(final_data, "output.csv", row.names = FALSE) 
 ```
 
 Wizualizacja rozkładu cen przed predykcją i po niej:
 
-```{r}
+```{r warning=FALSE}
 missing_indices <- which(is.na(completed_data_full$price))
 #wstawienie przewidywanych wartości do brakujących miejsc
 completed_data_full$price[missing_indices] <- predictions
